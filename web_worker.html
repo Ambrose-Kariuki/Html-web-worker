@@ -1,23 +1,33 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
+<html>
 <body>
-    
-</body>
-</html>
+
+<p>Count numbers: <output id="result"></output></p>
+<button onclick="startWorker()">Start Worker</button>
+<button onclick="stopWorker()">Stop Worker</button>
 
 <script>
-    var i = 0;
+let w;
 
-    function timedCount() {
-      i = i + 1;
-      postMessage(i);
-      setTimeout("timedCount()",500);
+function startWorker() {
+  const x = document.getElementById("result");
+  if (typeof(Worker) !== "undefined") {
+    if (typeof(w) == "undefined") {
+      w = new Worker("demo_workers.js");
     }
-    
-    timedCount();
+    w.onmessage = function(event) {
+      x.innerHTML = event.data;
+    };
+  } else {
+    x.innerHTML = "Sorry! No Web Worker support.";
+  }
+}
+
+function stopWorker() {
+  w.terminate();
+  w = undefined;
+}
 </script>
+
+</body>
+</html>
